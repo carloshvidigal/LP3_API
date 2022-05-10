@@ -1,4 +1,4 @@
-package com.example.demo;
+Upackage com.example.lp3.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
