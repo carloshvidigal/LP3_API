@@ -1,4 +1,4 @@
-Upackage com.example.lp3.model.entity;
+package com.example.lp3.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class Pessoa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private integer id;
+    private int id;
     private String logradouro;
     private String bairro;
     private String numero;
