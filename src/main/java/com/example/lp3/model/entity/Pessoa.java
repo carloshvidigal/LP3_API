@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class Pessoa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String logradouro;
     private String bairro;
     private String numero;
