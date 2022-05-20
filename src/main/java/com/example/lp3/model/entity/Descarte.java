@@ -20,4 +20,7 @@ public class Descarte {
 
     @ManyToOne
     private Funcionario funcionario;
+
+    @ManyToOne
+    private MotivoDescarte motivoDescarte;
 }
