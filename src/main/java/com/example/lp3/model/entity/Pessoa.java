@@ -25,12 +25,6 @@ public class Pessoa {
     private String telefoneCel;
     private String email;
 
-    @ManyToOne
-    private Fabricante fabricante;
-
-    @ManyToOne
-    private Categoria categoria;
-
 
 
 }

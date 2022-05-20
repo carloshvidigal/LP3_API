@@ -13,14 +13,21 @@ import javax.persistence.*;
 public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Integer id;
     private String nome;
     private String principioAtivo;
     private double valorUnitario;
-    private int qtdadeEstoque;
-    private int estoqueMax;
-    private int estoqueMin;
-    private int pontoRessuprimento;
+    private Integer qtdadeEstoque;
+    private Integer estoqueMax;
+    private Integer estoqueMin;
+    private Integer pontoRessuprimento;
+
+
+    @ManyToOne
+    private Fabricante fabricante;
+
+    @ManyToOne
+    private Categoria categoria;
 
 
 }
