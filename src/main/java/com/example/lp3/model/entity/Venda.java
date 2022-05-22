@@ -12,6 +12,9 @@ import java.util.Date;
 @AllArgsConstructor
 
 public class Venda {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Date dataVenda;
     private double valorTotal;
     private String notaFiscal;

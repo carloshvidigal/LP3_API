@@ -11,6 +11,9 @@ import javax.persistence.*;
 @AllArgsConstructor
 
 public class Permissao {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String moduloSistema;
     private boolean todasOperacoes;
     private boolean cadastrar;

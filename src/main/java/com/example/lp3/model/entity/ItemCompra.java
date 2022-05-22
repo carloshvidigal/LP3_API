@@ -13,6 +13,9 @@ import javax.persistence.*;
 @AllArgsConstructor
 
 public class ItemCompra {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Integer qtdadeProduto;
     private double valorTotalItem;
 

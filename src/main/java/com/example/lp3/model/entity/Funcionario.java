@@ -11,6 +11,9 @@ import javax.persistence.*;
 @AllArgsConstructor
 
 public class Funcionario extends Pessoa {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String cpf;
     private String senha;
 

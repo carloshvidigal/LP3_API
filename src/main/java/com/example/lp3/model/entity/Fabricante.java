@@ -12,6 +12,9 @@ import javax.persistence.*;
 
 
 public class Fabricante {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String nome;
     private String cnpj;
 }

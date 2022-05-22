@@ -11,6 +11,9 @@ import javax.persistence.*;
 @AllArgsConstructor
 
 public class ItemCarrinho {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Integer qtdadeProduto;
     private Integer idProduto;
 

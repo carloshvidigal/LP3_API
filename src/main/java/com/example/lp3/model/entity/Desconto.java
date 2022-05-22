@@ -12,6 +12,9 @@ import java.util.Date;
 @AllArgsConstructor
 
 public class Desconto {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Date dataInicio;
     private Date dataFinal;
 }

@@ -11,6 +11,9 @@ import javax.persistence.*;
 @AllArgsConstructor
 
 public class Cargo {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String nome;
 
     @ManyToOne

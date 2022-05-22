@@ -12,6 +12,9 @@ import java.util.Date;
 @AllArgsConstructor
 
 public class Descarte {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Integer qtdadeDescarte;
     private Date data;
 

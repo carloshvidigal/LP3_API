@@ -12,6 +12,9 @@ import java.util.Date;
 @AllArgsConstructor
 
 public class Compra {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Date dataCompra;
     private Date dataEntrega;
     private double valorTotal;

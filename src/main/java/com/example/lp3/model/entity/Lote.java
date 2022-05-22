@@ -12,6 +12,9 @@ import java.util.Date;
 @AllArgsConstructor
 
 public class Lote {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String codigo;
     private Integer qtdadeProduto;
     private Date dataFabricacao;

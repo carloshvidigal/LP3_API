@@ -11,8 +11,10 @@ import javax.persistence.*;
 @AllArgsConstructor
 
 public class CarrinhoVenda {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private double valorTotal;
-
 
     @ManyToOne
     private Funcionario funcionario;
