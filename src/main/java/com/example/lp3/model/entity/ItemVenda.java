@@ -20,4 +20,7 @@ public class ItemVenda {
     @ManyToOne
     private Produto produto;
 
+    @ManyToOne
+    private Venda venda;
+
 }
