@@ -21,5 +21,4 @@ public class Compra {
 
     @ManyToOne
     private Fornecedor fornecedor;
-
 }
