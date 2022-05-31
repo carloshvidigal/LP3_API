@@ -14,7 +14,5 @@ import javax.persistence.*;
 public class Fornecedor extends Pessoa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private String cnpj;
-
 }
