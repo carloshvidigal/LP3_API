@@ -12,7 +12,5 @@ import javax.persistence.*;
 
 
 public class Cliente extends Pessoa{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String cpf;
 }
