@@ -17,7 +17,7 @@ public class ItemVendaService {
         this.repository = repository;
     }
 
-    public List<ItemVenda> getVendasCompra() {
+    public List<ItemVenda> getItensVenda() {
         return repository.findAll();
     }
 
