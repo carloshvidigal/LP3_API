@@ -2,6 +2,7 @@ package com.example.lp3.api.controller;
 
 import com.example.lp3.api.dto.CargoDTO;
 import com.example.lp3.api.dto.PermissaoDTO;
+import com.example.lp3.exception.RegraNegocioException;
 import com.example.lp3.model.entity.Cargo;
 import com.example.lp3.model.entity.Permissao;
 import com.example.lp3.service.PermissaoService;
@@ -43,7 +44,7 @@ public class PermissaoController {
             Permissao permissao = converter(dto);
             permissao = service.salvar(permissao);
             return new ResponseEntity(permissao, HttpStatus.CREATED);
-        } catch (Exception e) {
+        } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -59,7 +60,7 @@ public class PermissaoController {
             permissao.setId(id);
             service.salvar(permissao);
             return ResponseEntity.ok(permissao);
-        } catch (Exception e) {
+        } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -73,7 +74,51 @@ public class PermissaoController {
         try {
             service.excluir(permissao.get());
             return new ResponseEntity(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    public Permissao converter(PermissaoDTO dto) {
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(dto, Permissao.class);
+    }    @PostMapping
+    public ResponseEntity post(PermissaoDTO dto) {
+        try {
+            Permissao permissao = converter(dto);
+            permissao = service.salvar(permissao);
+            return new ResponseEntity(permissao, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity put(@PathVariable("id") Long id, PermissaoDTO dto) {
+        if(!service.getPermissaoById(id).isPresent()) {
+            return new ResponseEntity("Permissão não encontrada", HttpStatus.NOT_FOUND);
+        }
+
+        try {
+            Permissao permissao = converter(dto);
+            permissao.setId(id);
+            service.salvar(permissao);
+            return ResponseEntity.ok(permissao);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity delete(@PathVariable("id") Long id) {
+        Optional<Permissao> permissao = service.getPermissaoById(id);
+        if (!permissao.isPresent()) {
+            return new ResponseEntity("Permissão não encontrada", HttpStatus.NOT_FOUND);
+        }
+        try {
+            service.excluir(permissao.get());
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
