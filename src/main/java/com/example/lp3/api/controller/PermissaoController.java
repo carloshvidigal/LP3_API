@@ -1,15 +1,16 @@
 package com.example.lp3.api.controller;
 
+import com.example.lp3.api.dto.CargoDTO;
 import com.example.lp3.api.dto.PermissaoDTO;
+import com.example.lp3.model.entity.Cargo;
 import com.example.lp3.model.entity.Permissao;
 import com.example.lp3.service.PermissaoService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,5 +35,51 @@ public class PermissaoController {
             return new ResponseEntity("Permissao não encontrado", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(permissao.map(PermissaoDTO::create));
+    }
+
+    @PostMapping
+    public ResponseEntity post(PermissaoDTO dto) {
+        try {
+            Permissao permissao = converter(dto);
+            permissao = service.salvar(permissao);
+            return new ResponseEntity(permissao, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity put(@PathVariable("id") Long id, PermissaoDTO dto) {
+        if(!service.getPermissaoById(id).isPresent()) {
+            return new ResponseEntity("Permissão não encontrada", HttpStatus.NOT_FOUND);
+        }
+
+        try {
+            Permissao permissao = converter(dto);
+            permissao.setId(id);
+            service.salvar(permissao);
+            return ResponseEntity.ok(permissao);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity delete(@PathVariable("id") Long id) {
+        Optional<Permissao> permissao = service.getPermissaoById(id);
+        if (!permissao.isPresent()) {
+            return new ResponseEntity("Permissão não encontrada", HttpStatus.NOT_FOUND);
+        }
+        try {
+            service.excluir(permissao.get());
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    public Permissao converter(PermissaoDTO dto) {
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(dto, Permissao.class);
     }
 }
