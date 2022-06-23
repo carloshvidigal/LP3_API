@@ -82,49 +82,5 @@ public class PermissaoController {
     public Permissao converter(PermissaoDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(dto, Permissao.class);
-    }    @PostMapping
-    public ResponseEntity post(PermissaoDTO dto) {
-        try {
-            Permissao permissao = converter(dto);
-            permissao = service.salvar(permissao);
-            return new ResponseEntity(permissao, HttpStatus.CREATED);
-        } catch (RegraNegocioException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @PutMapping("{id}")
-    public ResponseEntity put(@PathVariable("id") Long id, PermissaoDTO dto) {
-        if(!service.getPermissaoById(id).isPresent()) {
-            return new ResponseEntity("Permissão não encontrada", HttpStatus.NOT_FOUND);
-        }
-
-        try {
-            Permissao permissao = converter(dto);
-            permissao.setId(id);
-            service.salvar(permissao);
-            return ResponseEntity.ok(permissao);
-        } catch (RegraNegocioException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @DeleteMapping("{id}")
-    public ResponseEntity delete(@PathVariable("id") Long id) {
-        Optional<Permissao> permissao = service.getPermissaoById(id);
-        if (!permissao.isPresent()) {
-            return new ResponseEntity("Permissão não encontrada", HttpStatus.NOT_FOUND);
-        }
-        try {
-            service.excluir(permissao.get());
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
-        } catch (RegraNegocioException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    public Permissao converter(PermissaoDTO dto) {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(dto, Permissao.class);
     }
 }
