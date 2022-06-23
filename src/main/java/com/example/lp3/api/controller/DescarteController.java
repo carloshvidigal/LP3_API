@@ -36,7 +36,7 @@ public class DescarteController {
     }
     @PutMapping("{id}")
     public ResponseEntity put(@PathVariable("id") Long id, DescarteDTO dto) {
-        if(!service.getPermissaoById(id).isPresent()) {
+        if(!service.getDescarteById(id).isPresent()) {
             return new ResponseEntity("Descarte não encontrada", HttpStatus.NOT_FOUND);
         }
 
