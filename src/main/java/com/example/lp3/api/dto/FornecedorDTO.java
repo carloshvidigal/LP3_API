@@ -10,7 +10,18 @@ import org.modelmapper.ModelMapper;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FornecedorDTO {
+    private Long id;
     private String cnpj;
+    private String logradouro;
+    private String bairro;
+    private String numero;
+    private String cep;
+    private String complemento;
+    private String cidade;
+    private String estado;
+    private String telefoneFixo;
+    private String telefoneCel;
+    private String email;
 
     public static FornecedorDTO create(Fornecedor fornecedor) {
         ModelMapper modelMapper = new ModelMapper();
