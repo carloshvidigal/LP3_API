@@ -36,7 +36,7 @@ public class CargoController {
         return ResponseEntity.ok(cargo.map(CargoDTO::create));
     }
     @PostMapping
-    public ResponseEntity post(PermissaoDTO dto) {
+    public ResponseEntity post(CargoDTO dto) {
         try {
             Cargo cargo = converter(dto);
             cargo = service.salvar(cargo);
@@ -64,7 +64,7 @@ public class CargoController {
 
     @DeleteMapping("{id}")
     public ResponseEntity delete(@PathVariable("id") Long id) {
-        Optional<Cargo> cargo = service.getCargoById();
+        Optional<Cargo> cargo = service.getCargoById(id);
         if (!cargo .isPresent()) {
             return new ResponseEntity("Cargo não encontrado", HttpStatus.NOT_FOUND);
         }
@@ -80,6 +80,4 @@ public class CargoController {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(dto, Cargo.class);
     }
-
-
 }
