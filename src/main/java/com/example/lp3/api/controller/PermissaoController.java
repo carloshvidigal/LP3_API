@@ -1,13 +1,10 @@
 package com.example.lp3.api.controller;
 
-import com.example.lp3.api.dto.CargoDTO;
 import com.example.lp3.api.dto.PermissaoDTO;
 import com.example.lp3.exception.RegraNegocioException;
-import com.example.lp3.model.entity.Cargo;
 import com.example.lp3.model.entity.Permissao;
 import com.example.lp3.service.PermissaoService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
