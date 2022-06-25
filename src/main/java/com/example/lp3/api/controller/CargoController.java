@@ -1,10 +1,11 @@
 package com.example.lp3.api.controller;
 
 import com.example.lp3.api.dto.CargoDTO;
+import com.example.lp3.api.dto.PermissaoDTO;
+import com.example.lp3.exception.RegraNegocioException;
 import com.example.lp3.model.entity.Cargo;
 import com.example.lp3.service.CargoService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,18 +31,47 @@ public class CargoController {
     public ResponseEntity get(@PathVariable("id") Long id) {
         Optional<Cargo> cargo = service.getCargoById(id);
         if (!cargo.isPresent()) {
-            return new ResponseEntity("Cargo não encontrado", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("Cargo não encontrada", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(cargo.map(CargoDTO::create));
     }
-
     @PostMapping
     public ResponseEntity post(CargoDTO dto) {
         try {
             Cargo cargo = converter(dto);
             cargo = service.salvar(cargo);
             return new ResponseEntity(cargo, HttpStatus.CREATED);
-        } catch (Exception e) {
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity put(@PathVariable("id") Long id, CargoDTO dto) {
+        if(!service.getCargoById(id).isPresent()) {
+            return new ResponseEntity("Cargo não encontrado", HttpStatus.NOT_FOUND);
+        }
+
+        try {
+            Cargo cargo = converter(dto);
+            cargo.setId(id);
+            service.salvar(cargo);
+            return ResponseEntity.ok(cargo);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity delete(@PathVariable("id") Long id) {
+        Optional<Cargo> cargo = service.getCargoById(id);
+        if (!cargo .isPresent()) {
+            return new ResponseEntity("Cargo não encontrado", HttpStatus.NOT_FOUND);
+        }
+        try {
+            service.excluir(cargo.get());
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

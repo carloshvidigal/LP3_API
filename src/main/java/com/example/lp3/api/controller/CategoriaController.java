@@ -1,15 +1,16 @@
 package com.example.lp3.api.controller;
 
 import com.example.lp3.api.dto.CategoriaDTO;
+import com.example.lp3.api.dto.PermissaoDTO;
+import com.example.lp3.exception.RegraNegocioException;
 import com.example.lp3.model.entity.Categoria;
+import com.example.lp3.model.entity.Permissao;
 import com.example.lp3.service.CategoriaService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,5 +35,39 @@ public class CategoriaController {
             return new ResponseEntity("Categoria não encontrada", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(categoria.map(CategoriaDTO::create));
+    }
+    @PutMapping("{id}")
+    public ResponseEntity put(@PathVariable("id") Long id, CategoriaDTO dto) {
+        if(!service.getCategoriaById(id).isPresent()) {
+            return new ResponseEntity("Categoria não encontrada", HttpStatus.NOT_FOUND);
+        }
+
+        try {
+            Categoria categoria = converter(dto);
+            categoria.setId(id);
+            service.salvar(categoria);
+            return ResponseEntity.ok(categoria);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity delete(@PathVariable("id") Long id) {
+        Optional<Categoria> categoria = service.getCategoriaById(id);
+        if (!categoria.isPresent()) {
+            return new ResponseEntity("Categoria não encontrada", HttpStatus.NOT_FOUND);
+        }
+        try {
+            service.excluir(Categoria.get());
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    public Categoria converter(CategoriaDTO dto) {
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(dto, Categoria.class);
     }
 }
