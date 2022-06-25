@@ -17,6 +17,7 @@ public class PermissaoDTO {
     private boolean editar;
     private boolean visualizar;
     private boolean excluir;
+    private Long idCargo;
 
     public static PermissaoDTO create(Permissao permissao) {
         ModelMapper modelMapper = new ModelMapper();
