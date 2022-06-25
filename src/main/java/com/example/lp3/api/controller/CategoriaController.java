@@ -59,7 +59,7 @@ public class CategoriaController {
             return new ResponseEntity("Categoria não encontrada", HttpStatus.NOT_FOUND);
         }
         try {
-            service.excluir(Categoria.get());
+            service.excluir(categoria.get());
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

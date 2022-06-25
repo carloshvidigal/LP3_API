@@ -54,13 +54,9 @@ public class DescontoController {
         }
     }
 
-    public Desconto converter(DescontoDTO dto) {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(dto, Desconto.class);
-    }
     @PutMapping("{id}")
     public ResponseEntity put(@PathVariable("id") Long id, DescontoDTO dto) {
-        if(!service.getPermissaoById(id).isPresent()) {
+        if(!service.getDescontoById(id).isPresent()) {
             return new ResponseEntity("Desconto não encontrado", HttpStatus.NOT_FOUND);
         }
 
