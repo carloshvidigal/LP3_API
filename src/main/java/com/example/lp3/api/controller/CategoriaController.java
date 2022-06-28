@@ -4,12 +4,16 @@ import com.example.lp3.api.dto.CategoriaDTO;
 import com.example.lp3.api.dto.PermissaoDTO;
 import com.example.lp3.exception.RegraNegocioException;
 import com.example.lp3.model.entity.Categoria;
+import com.example.lp3.model.entity.Desconto;
 import com.example.lp3.model.entity.Permissao;
 import com.example.lp3.service.CategoriaService;
+import com.example.lp3.service.DescontoService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +24,11 @@ import java.util.stream.Collectors;
 @RequestMapping("api/v1/categorias")
 @RequiredArgsConstructor
 public class CategoriaController {
+    @Autowired
+    private ModelMapper modelMapper;
+
     private final CategoriaService service;
+    private final DescontoService descontoService;
 
     @GetMapping
     public ResponseEntity get() {
@@ -36,17 +44,41 @@ public class CategoriaController {
         }
         return ResponseEntity.ok(categoria.map(CategoriaDTO::create));
     }
+
+    @PostMapping
+    public ResponseEntity post(@RequestBody CategoriaDTO dto) {
+        try {
+            Categoria categoriaRequisicao = modelMapper.map(dto, Categoria.class);
+            Desconto desconto = categoriaRequisicao.getDesconto();
+
+            if(desconto != null) {
+                descontoService.salvar(categoriaRequisicao.getDesconto());
+            }
+
+            Categoria categoria = service.salvar(categoriaRequisicao);
+
+            CategoriaDTO categoriaResposta = modelMapper.map(categoria, CategoriaDTO.class);
+
+            return new ResponseEntity(categoriaResposta, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PutMapping("{id}")
-    public ResponseEntity put(@PathVariable("id") Long id, CategoriaDTO dto) {
+    public ResponseEntity put(@PathVariable("id") Long id, @RequestBody CategoriaDTO dto) {
         if(!service.getCategoriaById(id).isPresent()) {
             return new ResponseEntity("Categoria não encontrada", HttpStatus.NOT_FOUND);
         }
 
         try {
-            Categoria categoria = converter(dto);
-            categoria.setId(id);
-            service.salvar(categoria);
-            return ResponseEntity.ok(categoria);
+            Categoria categoriaRequisicao = modelMapper.map(dto, Categoria.class);
+            categoriaRequisicao.setId(id);
+            Categoria categoria = service.salvar(categoriaRequisicao);
+
+            CategoriaDTO categoriaResposta = modelMapper.map(categoria, CategoriaDTO.class);
+
+            return ResponseEntity.ok(categoriaResposta);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -64,10 +96,5 @@ public class CategoriaController {
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }
-
-    public Categoria converter(CategoriaDTO dto) {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(dto, Categoria.class);
     }
 }
