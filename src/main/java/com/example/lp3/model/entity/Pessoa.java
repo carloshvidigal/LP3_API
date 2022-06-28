@@ -14,6 +14,7 @@ public class Pessoa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String nome;
     private String logradouro;
     private String bairro;
     private String numero;

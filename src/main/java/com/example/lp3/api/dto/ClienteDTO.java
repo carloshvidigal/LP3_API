@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 @AllArgsConstructor
 public class ClienteDTO {
     private Long id;
+    private String nome;
     private String logradouro;
     private String bairro;
     private String numero;
