@@ -6,6 +6,7 @@ import com.example.lp3.model.entity.Permissao;
 import com.example.lp3.service.PermissaoService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/permissoes")
 @RequiredArgsConstructor
 public class PermissaoController {
+    @Autowired
+    private ModelMapper modelMapper;
+
     private final PermissaoService service;
 
     @GetMapping()
@@ -32,31 +36,36 @@ public class PermissaoController {
         if (!permissao.isPresent()) {
             return new ResponseEntity("Permissao não encontrado", HttpStatus.NOT_FOUND);
         }
+
         return ResponseEntity.ok(permissao.map(PermissaoDTO::create));
     }
 
-    @PostMapping
-    public ResponseEntity post(PermissaoDTO dto) {
+    @PostMapping()
+    public ResponseEntity post(@RequestBody PermissaoDTO dto) {
         try {
-            Permissao permissao = converter(dto);
-            permissao = service.salvar(permissao);
-            return new ResponseEntity(permissao, HttpStatus.CREATED);
+            Permissao permissaoRequisicao = modelMapper.map(dto, Permissao.class);
+            Permissao permissao = service.salvar(permissaoRequisicao);
+
+            PermissaoDTO permissaoResposta = modelMapper.map(permissao, PermissaoDTO.class);
+            return new ResponseEntity(permissaoResposta, HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("{id}")
-    public ResponseEntity put(@PathVariable("id") Long id, PermissaoDTO dto) {
+    public ResponseEntity put(@PathVariable("id") Long id, @RequestBody PermissaoDTO dto) {
         if(!service.getPermissaoById(id).isPresent()) {
             return new ResponseEntity("Permissão não encontrada", HttpStatus.NOT_FOUND);
         }
 
         try {
-            Permissao permissao = converter(dto);
+            Permissao permissao = modelMapper.map(dto, Permissao.class);
             permissao.setId(id);
             service.salvar(permissao);
-            return ResponseEntity.ok(permissao);
+
+            PermissaoDTO permissaoResposta = modelMapper.map(permissao, PermissaoDTO.class);
+            return ResponseEntity.ok(permissaoResposta);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -74,10 +83,5 @@ public class PermissaoController {
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }
-
-    public Permissao converter(PermissaoDTO dto) {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(dto, Permissao.class);
     }
 }
