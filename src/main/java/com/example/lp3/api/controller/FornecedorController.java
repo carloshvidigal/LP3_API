@@ -1,15 +1,12 @@
 package com.example.lp3.api.controller;
 
-import com.example.lp3.api.dto.CargoDTO;
 import com.example.lp3.api.dto.FornecedorDTO;
-import com.example.lp3.api.dto.PermissaoDTO;
 import com.example.lp3.exception.RegraNegocioException;
-import com.example.lp3.model.entity.Cargo;
 import com.example.lp3.model.entity.Fornecedor;
-import com.example.lp3.model.entity.Permissao;
 import com.example.lp3.service.FornecedorService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +19,9 @@ import java.util.stream.Collectors;
 @RequestMapping("api/v1/fornecedores")
 @RequiredArgsConstructor
 public class FornecedorController {
+    @Autowired
+    private ModelMapper modelMapper;
+
     private final FornecedorService service;
 
     @GetMapping
@@ -40,26 +40,32 @@ public class FornecedorController {
     }
 
     @PostMapping()
-    public ResponseEntity post(FornecedorDTO dto) {
+    public ResponseEntity post(@RequestBody FornecedorDTO dto) {
         try {
-            Fornecedor fornecedor = converter(dto);
+            Fornecedor fornecedorRequisicao = modelMapper.map(dto, Fornecedor.class);
+            Fornecedor fornecedor = service.salvar(fornecedorRequisicao);
 
-            fornecedor = service.salvar(fornecedor);     return new ResponseEntity(fornecedor, HttpStatus.CREATED);
+            FornecedorDTO fornecedorResposta = modelMapper.map(fornecedor, FornecedorDTO.class);
+
+            return new ResponseEntity(fornecedorResposta, HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("{id}")
-    public ResponseEntity put(@PathVariable("id") Long id, FornecedorDTO dto) {
+    public ResponseEntity put(@PathVariable("id") Long id, @RequestBody FornecedorDTO dto) {
         if (!service.getFornecedorById(id).isPresent()) {
             return new ResponseEntity("Fornecedor não encontrado", HttpStatus.NOT_FOUND);
         }
         try {
-            Fornecedor fornecedor = converter(dto);
-            fornecedor.setId(id);
-            service.salvar(fornecedor);
-            return ResponseEntity.ok(fornecedor);
+            Fornecedor fornecedorRequisicao = modelMapper.map(dto, Fornecedor.class);
+            fornecedorRequisicao.setId(id);
+            Fornecedor fornecedor = service.salvar(fornecedorRequisicao);
+
+            FornecedorDTO fornecedorResposta = modelMapper.map(fornecedor, FornecedorDTO.class);
+
+            return ResponseEntity.ok(fornecedorResposta);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -77,10 +83,5 @@ public class FornecedorController {
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }
-
-    public Fornecedor converter(FornecedorDTO dto) {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(dto, Fornecedor.class);
     }
 }
