@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -16,6 +17,7 @@ public class Cargo {
     private Long id;
     private String nome;
 
-    @ManyToOne
-    private Permissao permissao;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="cargo_id")
+    private List<Permissao> permissoes;
 }

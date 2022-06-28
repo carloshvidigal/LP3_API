@@ -20,4 +20,7 @@ public class Permissao {
     private boolean editar;
     private boolean visualizar;
     private boolean excluir;
+
+    @ManyToOne
+    private Cargo cargo;
 }

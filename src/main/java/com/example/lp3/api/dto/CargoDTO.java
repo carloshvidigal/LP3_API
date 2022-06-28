@@ -6,13 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CargoDTO {
     private Long id;
     private String nome;
-    private Long idPermissao;
+    private List<PermissaoDTO> permissoes;
 
     public static CargoDTO create(Cargo cargo) {
         ModelMapper modelMapper = new ModelMapper();
