@@ -5,12 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Compra {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,4 +21,8 @@ public class Compra {
 
     @ManyToOne
     private Fornecedor fornecedor;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="compra_id")
+    private List<ItemCompra> itensCompra;
 }
