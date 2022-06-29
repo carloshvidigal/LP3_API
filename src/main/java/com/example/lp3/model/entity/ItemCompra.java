@@ -6,12 +6,10 @@ import lombok.NoArgsConstructor;
 import javax.persistence.ManyToOne;
 import javax.persistence.*;
 
-
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class ItemCompra {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
