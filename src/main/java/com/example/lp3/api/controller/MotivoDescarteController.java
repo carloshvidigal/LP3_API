@@ -1,9 +1,7 @@
 package com.example.lp3.api.controller;
 
-import com.example.lp3.api.dto.CompraDTO;
 import com.example.lp3.api.dto.MotivoDescarteDTO;
 import com.example.lp3.exception.RegraNegocioException;
-import com.example.lp3.model.entity.Compra;
 import com.example.lp3.model.entity.MotivoDescarte;
 import com.example.lp3.service.MotivoDescarteService;
 import lombok.RequiredArgsConstructor;
