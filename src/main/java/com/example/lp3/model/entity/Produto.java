@@ -21,7 +21,7 @@ public class Produto {
     private Integer estoqueMax;
     private Integer estoqueMin;
     private Integer pontoRessuprimento;
-
+    private String caminhoImagem;
 
     @ManyToOne
     private Fabricante fabricante;
@@ -31,6 +31,4 @@ public class Produto {
 
     @ManyToOne
     private Desconto desconto;
-
-
 }

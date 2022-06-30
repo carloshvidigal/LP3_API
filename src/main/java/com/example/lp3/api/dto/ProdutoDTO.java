@@ -21,6 +21,7 @@ public class ProdutoDTO {
     private Long idFabricante;
     private Long idCategoria;
     private Long idDesconto;
+    private String caminhoImagem;
 
     public static ProdutoDTO create(Produto produto) {
         ModelMapper modelMapper = new ModelMapper();

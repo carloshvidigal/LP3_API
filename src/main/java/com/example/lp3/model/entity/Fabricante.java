@@ -9,8 +9,6 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
-
 public class Fabricante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

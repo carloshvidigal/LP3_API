@@ -1,18 +1,15 @@
 package com.example.lp3.api.controller;
 
-import com.example.lp3.api.dto.CargoDTO;
 import com.example.lp3.api.dto.ItemCompraDTO;
-import com.example.lp3.model.entity.Cargo;
+import com.example.lp3.exception.RegraNegocioException;
 import com.example.lp3.model.entity.ItemCompra;
 import com.example.lp3.service.ItemCompraService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,6 +18,9 @@ import java.util.stream.Collectors;
 @RequestMapping("api/v1/itensCompra")
 @RequiredArgsConstructor
 public class ItemCompraController {
+    @Autowired
+    private ModelMapper modelMapper;
+
     private final ItemCompraService service;
 
     @GetMapping
@@ -38,4 +38,48 @@ public class ItemCompraController {
         return ResponseEntity.ok(itemCompra.map(ItemCompraDTO::create));
     }
 
+    @PostMapping
+    public ResponseEntity post(@RequestBody ItemCompraDTO dto) {
+        try {
+            ItemCompra itemCompraRequisicao = modelMapper.map(dto, ItemCompra.class);
+            ItemCompra itemCompra = service.salvar(itemCompraRequisicao);
+
+            ItemCompraDTO itemCompraResposta = modelMapper.map(itemCompra, ItemCompraDTO.class);
+            return new ResponseEntity(itemCompraResposta, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity put(@PathVariable("id") Long id, @RequestBody ItemCompraDTO dto) {
+        if(!service.getItemCompraById(id).isPresent()) {
+            return new ResponseEntity("Item de Compra não encontrada", HttpStatus.NOT_FOUND);
+        }
+
+        try {
+            ItemCompra itemCompraRequisicao = modelMapper.map(dto, ItemCompra.class);
+            itemCompraRequisicao.setId(id);
+            ItemCompra itemCompra = service.salvar(itemCompraRequisicao);
+
+            ItemCompraDTO itemCompraResposta = modelMapper.map(itemCompra, ItemCompraDTO.class);
+            return ResponseEntity.ok(itemCompraResposta);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity delete(@PathVariable("id") Long id) {
+        Optional<ItemCompra> itemCompra  = service.getItemCompraById(id);
+        if (!itemCompra.isPresent()) {
+            return new ResponseEntity("Item de Compra não encontrada", HttpStatus.NOT_FOUND);
+        }
+        try {
+            service.excluir(itemCompra.get());
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

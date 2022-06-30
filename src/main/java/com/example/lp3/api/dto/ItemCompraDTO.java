@@ -16,7 +16,6 @@ public class ItemCompraDTO {
     private Long idProduto;
     private Long idCompra;
 
-
     public static ItemCompraDTO create(ItemCompra itemCompra) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(itemCompra, ItemCompraDTO.class);

@@ -17,8 +17,6 @@ public class Funcionario extends Pessoa {
     private String cpf;
     private String senha;
 
-    @ManyToOne
+    @OneToOne
     private Cargo cargo;
-
-
 }

@@ -9,8 +9,6 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
-
 public class Cliente extends Pessoa{
     private String cpf;
 }
