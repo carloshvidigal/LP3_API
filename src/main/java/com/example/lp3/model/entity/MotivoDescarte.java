@@ -9,8 +9,6 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
-
 public class MotivoDescarte {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
