@@ -6,6 +6,7 @@ import com.example.lp3.model.entity.Descarte;
 import com.example.lp3.service.DescarteService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,9 @@ import java.util.stream.Collectors;
 @RequestMapping("api/v1/descartes")
 @RequiredArgsConstructor
 public class DescarteController {
+    @Autowired
+    private ModelMapper modelMapper;
+
     private final DescarteService service;
 
     @GetMapping
@@ -34,17 +38,35 @@ public class DescarteController {
         }
         return ResponseEntity.ok(descarte.map(DescarteDTO::create));
     }
+
+    @PostMapping
+    public ResponseEntity post(@RequestBody DescarteDTO dto) {
+        try {
+            Descarte descarteRequisicao = modelMapper.map(dto, Descarte.class);
+            Descarte descarte = service.salvar(descarteRequisicao);
+
+            DescarteDTO descarteResposta = modelMapper.map(descarte, DescarteDTO.class);
+            return new ResponseEntity(descarteResposta, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PutMapping("{id}")
-    public ResponseEntity put(@PathVariable("id") Long id, DescarteDTO dto) {
+    public ResponseEntity put(@PathVariable("id") Long id, @RequestBody DescarteDTO dto) {
         if(!service.getDescarteById(id).isPresent()) {
             return new ResponseEntity("Descarte não encontrada", HttpStatus.NOT_FOUND);
         }
 
         try {
-            Descarte descarte = converter(dto);
-            descarte.setId(id);
-            service.salvar(descarte);
-            return ResponseEntity.ok(descarte);
+            Descarte descarteRequisicao = modelMapper.map(dto, Descarte.class);
+
+            descarteRequisicao.setId(id);
+            Descarte descarte =  service.salvar(descarteRequisicao);
+
+            DescarteDTO descarteResposta = modelMapper.map(descarte, DescarteDTO.class);
+
+            return ResponseEntity.ok(descarteResposta);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -62,10 +84,5 @@ public class DescarteController {
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }
-
-    public Descarte converter(DescarteDTO dto) {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(dto, Descarte.class);
     }
 }
