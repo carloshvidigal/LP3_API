@@ -1,5 +1,7 @@
 package com.example.lp3.config;
 
+import com.example.lp3.security.JwtService;
+import com.example.lp3.security.JwtAuthFilter;
 import com.example.lp3.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,9 +23,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private JwtService jwtService;
+
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public OncePerRequestFilter jwtFilter(){
+        return new JwtAuthFilter(jwtService, usuarioService);
     }
 
     @Override
@@ -32,4 +42,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .userDetailsService(usuarioService)
             .passwordEncoder(passwordEncoder());
     }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .csrf().disable()
+                .authorizeRequests()
+                    .antMatchers("api/v1/cargos")
+                        .hasAnyRole("USER", "ADMIN")
+                    .antMatchers("api/v1/categorias")
+                        .hasAnyRole("USER", "ADMIN")
+
+
+
+    }
+
+
+
 }
