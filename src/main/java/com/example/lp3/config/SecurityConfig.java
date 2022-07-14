@@ -48,15 +48,54 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("api/v1/cargos")
+                    .antMatchers("api/v1/cargos/**")
                         .hasAnyRole("USER", "ADMIN")
-                    .antMatchers("api/v1/categorias")
+                    .antMatchers("api/v1/categorias/**")
                         .hasAnyRole("USER", "ADMIN")
-
-
-
+                    .antMatchers("/api/v1/clientes/**")
+                        .hasAnyRole("USER", "ADMIN")
+                     .antMatchers("/api/v1/compras/**")
+                        .hasAnyRole("USER", "ADMIN")
+                    .antMatchers("/api/v1/descartes/**")
+                        .hasAnyRole("USER", "ADMIN")
+                    .antMatchers("/api/v1/descontos/**")
+                        .hasAnyRole("USER", "ADMIN")
+                    .antMatchers("/api/v1/fabricantes/**")
+                        .hasAnyRole("USER", "ADMIN")
+                    .antMatchers("/api/v1/fornecedores/**")
+                        .hasAnyRole("USER", "ADMIN")
+                    .antMatchers("/api/v1/funcionarios/**")
+                        .hasAnyRole("USER", "ADMIN")
+                    .antMatchers("/api/v1/itensCompra/**")
+                        .hasAnyRole("USER", "ADMIN")
+                    .antMatchers("/api/v1/itensVenda/**")
+                        .hasAnyRole("USER", "ADMIN")
+                    .antMatchers("/api/v1/lotes/**")
+                        .hasAnyRole("USER", "ADMIN")
+                    .antMatchers("/api/v1/motivosDescarte/**")
+                        .hasAnyRole("USER", "ADMIN")
+                    .antMatchers("/api/v1/produtos/**")
+                        .hasAnyRole("USER", "ADMIN")
+                    .antMatchers("/api/v1/usuarios/**")
+                        .permitAll()
+                    .antMatchers("/api/v1/vendas/**")
+                        .hasAnyRole("USER", "ADMIN")
+                .and()
+                    .sessionManagement()
+                    .sessionCreationPolicy(sessionCreationPolicy.STATELESS)
+                .and()
+                    .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+        ;
     }
 
-
-
+    @override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(
+                "/v2/api-docs",
+                "/configuration/ui",
+                "/swagger-resources/**",
+                "/configuration/security",
+                "/swagger-ui.html",
+                "/webjars/**");
+    }
 }
