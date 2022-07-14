@@ -82,7 +82,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .hasAnyRole("USER", "ADMIN")
                 .and()
                     .sessionManagement()
-                    .sessionCreationPolicy(sessionCreationPolicy.STATELESS)
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
         ;

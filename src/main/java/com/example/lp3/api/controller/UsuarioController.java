@@ -21,7 +21,6 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
     private final PasswordEncoder passwordEncoder;
-
     private final JwtService jwtService;
 
     @PostMapping
@@ -31,10 +30,9 @@ public class UsuarioController {
         usuario.setSenha(senhaCriptografada);
         return usuarioService.salvar(usuario);
     }
-}
 
 @PostMapping("/auth")
-public TokenDTO autenticar(@Requestbody CredenciaisDTO credenciais){
+public TokenDTO autenticar(@RequestBody UsuarioDTO credenciais){
     try{
         Usuario usuario = Usuario.builder()
                 .login(credenciais.getLogin())
