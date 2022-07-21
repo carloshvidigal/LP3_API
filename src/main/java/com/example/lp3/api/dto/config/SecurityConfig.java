@@ -1,4 +1,4 @@
-package com.example.lp3.config;
+package com.example.lp3.api.dto.config;
 
 import com.example.lp3.security.JwtService;
 import com.example.lp3.security.JwtAuthFilter;
@@ -48,9 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("api/v1/cargos/**")
+                    .antMatchers("/api/v1/cargos/**")
                         .hasAnyRole("USER", "ADMIN")
-                    .antMatchers("api/v1/categorias/**")
+                    .antMatchers("/api/v1/categorias/**")
                         .hasAnyRole("USER", "ADMIN")
                     .antMatchers("/api/v1/clientes/**")
                         .hasAnyRole("USER", "ADMIN")
