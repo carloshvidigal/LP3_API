@@ -5,6 +5,10 @@ import com.example.lp3.api.dto.PermissaoDTO;
 import com.example.lp3.exception.RegraNegocioException;
 import com.example.lp3.model.entity.Cargo;
 import com.example.lp3.service.CargoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("api/v1/cargos")
 @RequiredArgsConstructor
+@Api("API de Cargos")
 public class CargoController {
     @Autowired
     private ModelMapper modelMapper;
@@ -31,7 +36,13 @@ public class CargoController {
         return ResponseEntity.ok(cargos.stream().map(CargoDTO::create).collect(Collectors.toList()));
     }
 
+
     @GetMapping("/{id}")
+    @ApiOperation("Obter detalhes de cargos")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Cargo encontrado"),
+            @ApiResponse(code = 404, message = "Cargo não encontrado")
+    })
     public ResponseEntity get(@PathVariable("id") Long id) {
         Optional<Cargo> cargo = service.getCargoById(id);
         if (!cargo.isPresent()) {
@@ -41,6 +52,11 @@ public class CargoController {
     }
 
     @PostMapping
+    @ApiOperation("Salva um novo cargo")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Cargo salvo com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar o Cargo")
+    })
     public ResponseEntity post(@RequestBody CargoDTO dto) {
         try {
             Cargo cargoRequisicao = modelMapper.map(dto, Cargo.class);
