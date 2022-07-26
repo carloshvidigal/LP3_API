@@ -8,6 +8,9 @@ import com.example.lp3.model.entity.Desconto;
 import com.example.lp3.model.entity.Permissao;
 import com.example.lp3.service.CategoriaService;
 import com.example.lp3.service.DescontoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("api/v1/categorias")
 @RequiredArgsConstructor
+@Api("API de Categoria")
 public class CategoriaController {
     @Autowired
     private ModelMapper modelMapper;
@@ -31,6 +35,10 @@ public class CategoriaController {
     private final DescontoService descontoService;
 
     @GetMapping
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Categoria encontrado"),
+            @ApiResponse(code = 404, message = "Categoria não encontrado")
+    })
     public ResponseEntity get() {
         List<Categoria> categorias = service.getCategorias();
         return ResponseEntity.ok(categorias.stream().map(CategoriaDTO::create).collect(Collectors.toList()));
@@ -46,6 +54,10 @@ public class CategoriaController {
     }
 
     @PostMapping
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Categoria salvo com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar o Categoria")
+    })
     public ResponseEntity post(@RequestBody CategoriaDTO dto) {
         try {
             Categoria categoriaRequisicao = modelMapper.map(dto, Categoria.class);
