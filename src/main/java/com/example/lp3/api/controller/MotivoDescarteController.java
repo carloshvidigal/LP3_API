@@ -4,6 +4,9 @@ import com.example.lp3.api.dto.MotivoDescarteDTO;
 import com.example.lp3.exception.RegraNegocioException;
 import com.example.lp3.model.entity.MotivoDescarte;
 import com.example.lp3.service.MotivoDescarteService;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +28,21 @@ public class MotivoDescarteController {
     private final MotivoDescarteService service;
 
     @GetMapping
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Motivos de Descarte encontrados")
+    })
+
     public ResponseEntity get() {
         List<MotivoDescarte> motivosDescarte = service.getMotivosDescarte();
         return ResponseEntity.ok(motivosDescarte.stream().map(MotivoDescarteDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity get(@PathVariable("id") Long id) {
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Motivo de Descarte encontrado"),
+            @ApiResponse(code = 404, message = "Motivo de Descarte não encontrado")
+    })
+    public ResponseEntity get(@PathVariable("id") @ApiParam("Id do Motivo de Descarte") Long id) {
         Optional<MotivoDescarte> motivoDescarte = service.getMotivoDescarteById(id);
         if (!motivoDescarte.isPresent()) {
             return new ResponseEntity("Motivo de Descarte não encontrado", HttpStatus.NOT_FOUND);
@@ -40,6 +51,10 @@ public class MotivoDescarteController {
     }
 
     @PostMapping
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Motivo de Descarte salvo com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar o Motivo de Descarte")
+    })
     public ResponseEntity post(@RequestBody MotivoDescarteDTO dto) {
         try {
             MotivoDescarte motivoDescarteRequisicao = modelMapper.map(dto, MotivoDescarte.class);
@@ -53,7 +68,12 @@ public class MotivoDescarteController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity put(@PathVariable("id") Long id, @RequestBody MotivoDescarteDTO dto) {
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Motivo de Descarte salvo com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar o Motivo de Descarte"),
+            @ApiResponse(code = 404, message = "Motivo de Descarte não encontrado")
+    })
+    public ResponseEntity put(@PathVariable("id") @ApiParam("Id do Funcionário") Long id, @RequestBody MotivoDescarteDTO dto) {
         if(!service.getMotivoDescarteById(id).isPresent()) {
             return new ResponseEntity("Motivo de Descarte não encontrado", HttpStatus.NOT_FOUND);
         }
@@ -71,7 +91,12 @@ public class MotivoDescarteController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity delete(@PathVariable("id") Long id) {
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "Motivo de Descarte excluído com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao excluir o Motivo de Descarte"),
+            @ApiResponse(code = 404, message = "Motivo de Descarte não encontrado")
+    })
+            public ResponseEntity delete(@PathVariable("id") Long id) {
         Optional<MotivoDescarte> motivoDescarte  = service.getMotivoDescarteById(id);
         if (!motivoDescarte.isPresent()) {
             return new ResponseEntity("Motivo de Descarte não encontrado", HttpStatus.NOT_FOUND);

@@ -5,10 +5,7 @@ import com.example.lp3.api.dto.PermissaoDTO;
 import com.example.lp3.exception.RegraNegocioException;
 import com.example.lp3.model.entity.Cargo;
 import com.example.lp3.service.CargoService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +35,12 @@ public class CargoController {
 
 
     @GetMapping("/{id}")
-    @ApiOperation("Obter detalhes de cargos")
+    @ApiOperation("Obter detalhes de um cargos")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Cargo encontrado"),
             @ApiResponse(code = 404, message = "Cargo não encontrado")
     })
-    public ResponseEntity get(@PathVariable("id") Long id) {
+    public ResponseEntity get(@PathVariable("id") @ApiParam("Id do Cargo") Long id) {
         Optional<Cargo> cargo = service.getCargoById(id);
         if (!cargo.isPresent()) {
             return new ResponseEntity("Cargo não encontrado", HttpStatus.NOT_FOUND);
