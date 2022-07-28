@@ -4,6 +4,10 @@ import com.example.lp3.api.dto.FabricanteDTO;
 import com.example.lp3.exception.RegraNegocioException;
 import com.example.lp3.model.entity.Fabricante;
 import com.example.lp3.service.FabricanteService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping ("/api/v1/fabricantes")
 @RequiredArgsConstructor
+@Api("API de Fabricante")
 public class FabricanteController {
     @Autowired
     private ModelMapper modelMapper;
@@ -25,13 +30,20 @@ public class FabricanteController {
     private final FabricanteService service;
 
     @GetMapping()
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Fabricantes encontrados")
+    })
     public ResponseEntity get() {
         List<Fabricante> fabricantes = service.getFabricantes();
         return ResponseEntity.ok(fabricantes.stream().map(FabricanteDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity get(@PathVariable("id") Long id) {
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Fabricante encontrado"),
+            @ApiResponse(code = 404, message = "Fabricante não encontrado")
+    })
+    public ResponseEntity get(@PathVariable("id") @ApiParam("Id do Fabricante") Long id) {
         Optional<Fabricante> fabricante = service.getFabricanteById(id);
         if (!fabricante.isPresent()) {
             return new ResponseEntity("Fabricante não encontrado", HttpStatus.NOT_FOUND);
@@ -40,6 +52,10 @@ public class FabricanteController {
     }
 
     @PostMapping
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Fabricante salvo com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar o Fabricante")
+    })
     public ResponseEntity post(@RequestBody FabricanteDTO dto) {
         try {
             Fabricante fabricanteRequisicao = modelMapper.map(dto, Fabricante.class);
@@ -53,7 +69,12 @@ public class FabricanteController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity put(@PathVariable("id") Long id, @RequestBody FabricanteDTO dto) {
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Fabricante salvo com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar o Fabricante"),
+            @ApiResponse(code = 404, message = "Fabricante não encontrado")
+    })
+    public ResponseEntity put(@PathVariable("id") @ApiParam("Id do Fabricante") Long id, @RequestBody FabricanteDTO dto) {
         if(!service.getFabricanteById(id).isPresent()) {
             return new ResponseEntity("Fabricante não encontrado", HttpStatus.NOT_FOUND);
         }
@@ -71,7 +92,12 @@ public class FabricanteController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity delete(@PathVariable("id") Long id) {
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "Fabricante excluído com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao excluir o Fabricante"),
+            @ApiResponse(code = 404, message = "Fabricante não encontrado")
+    })
+    public ResponseEntity delete(@PathVariable("id") @ApiParam("Id do Fabricante") Long id) {
         Optional<Fabricante> fabricante= service.getFabricanteById(id);
         if (!fabricante.isPresent()) {
             return new ResponseEntity("Fabricante não encontrado", HttpStatus.NOT_FOUND);

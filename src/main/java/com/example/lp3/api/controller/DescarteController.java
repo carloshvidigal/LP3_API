@@ -4,6 +4,10 @@ import com.example.lp3.api.dto.DescarteDTO;
 import com.example.lp3.exception.RegraNegocioException;
 import com.example.lp3.model.entity.Descarte;
 import com.example.lp3.service.DescarteService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("api/v1/descartes")
 @RequiredArgsConstructor
+@Api("API de Descarte")
 public class DescarteController {
     @Autowired
     private ModelMapper modelMapper;
@@ -25,13 +30,20 @@ public class DescarteController {
     private final DescarteService service;
 
     @GetMapping
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Descartes encontrados")
+    })
     public ResponseEntity get() {
         List<Descarte> descartes = service.getDescartes();
         return ResponseEntity.ok(descartes.stream().map(DescarteDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity get(@PathVariable("id") Long id) {
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Descarte encontrado"),
+            @ApiResponse(code = 404, message = "Descarte não encontrado")
+    })
+    public ResponseEntity get(@PathVariable("id") @ApiParam("Id do Descarte") Long id) {
         Optional<Descarte> descarte = service.getDescarteById(id);
         if (!descarte.isPresent()) {
             return new ResponseEntity("Descarte não encontrado", HttpStatus.NOT_FOUND);
@@ -40,6 +52,10 @@ public class DescarteController {
     }
 
     @PostMapping
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Descarte salvo com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar o Descarte")
+    })
     public ResponseEntity post(@RequestBody DescarteDTO dto) {
         try {
             Descarte descarteRequisicao = modelMapper.map(dto, Descarte.class);
@@ -53,7 +69,12 @@ public class DescarteController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity put(@PathVariable("id") Long id, @RequestBody DescarteDTO dto) {
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Descarte salvo com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar o Descarte"),
+            @ApiResponse(code = 404, message = "Descarte não encontrado")
+    })
+    public ResponseEntity put(@PathVariable("id") @ApiParam("Id do Descarte") Long id, @RequestBody DescarteDTO dto) {
         if(!service.getDescarteById(id).isPresent()) {
             return new ResponseEntity("Descarte não encontrada", HttpStatus.NOT_FOUND);
         }
@@ -73,7 +94,12 @@ public class DescarteController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity delete(@PathVariable("id") Long id) {
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "Descarte excluído com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao excluir o Descarte"),
+            @ApiResponse(code = 404, message = "Descarte não encontrado")
+    })
+    public ResponseEntity delete(@PathVariable("id") @ApiParam("Id do Descarte") Long id) {
         Optional<Descarte> descarte = service.getDescarteById(id);
         if (!descarte.isPresent()) {
             return new ResponseEntity("Descarte não encontrado", HttpStatus.NOT_FOUND);

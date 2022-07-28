@@ -1,12 +1,13 @@
 package com.example.lp3.api.controller;
 
-import com.example.lp3.api.dto.CategoriaDTO;
 import com.example.lp3.api.dto.VendaDTO;
 import com.example.lp3.exception.RegraNegocioException;
-import com.example.lp3.model.entity.Categoria;
-import com.example.lp3.model.entity.Desconto;
 import com.example.lp3.model.entity.Venda;
 import com.example.lp3.service.VendaService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("api/v1/vendas")
 @RequiredArgsConstructor
+@Api("API de Venda")
 public class VendaController {
     @Autowired
     private ModelMapper modelMapper;
@@ -28,13 +30,20 @@ public class VendaController {
     private final VendaService service;
 
     @GetMapping
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Vendas encontradas")
+    })
     public ResponseEntity get() {
         List<Venda> vendas = service.getVendas();
         return ResponseEntity.ok(vendas.stream().map(VendaDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity get(@PathVariable("id") Long id) {
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Venda encontrada"),
+            @ApiResponse(code = 404, message = "Categoria não Venda")
+    })
+    public ResponseEntity get(@PathVariable("id") @ApiParam("Id da Venda") Long id) {
         Optional<Venda> venda = service.getVendaById(id);
         if (!venda.isPresent()) {
             return new ResponseEntity("Venda não encontrada", HttpStatus.NOT_FOUND);
@@ -43,6 +52,10 @@ public class VendaController {
     }
 
     @PostMapping
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Venda salva com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar a Venda")
+    })
     public ResponseEntity post(@RequestBody VendaDTO dto) {
         try {
             Venda vendaRequisicao = modelMapper.map(dto, Venda.class);
@@ -57,7 +70,12 @@ public class VendaController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity put(@PathVariable("id") Long id, @RequestBody VendaDTO dto) {
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Venda salva com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar a Venda"),
+            @ApiResponse(code = 404, message = "Venda não encontrada")
+    })
+    public ResponseEntity put(@PathVariable("id") @ApiParam("Id da Venda") Long id, @RequestBody VendaDTO dto) {
         if(!service.getVendaById(id).isPresent()) {
             return new ResponseEntity("Venda não encontrada", HttpStatus.NOT_FOUND);
         }
@@ -76,7 +94,12 @@ public class VendaController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity delete(@PathVariable("id") Long id) {
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "Venda excluída com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao excluir a Venda"),
+            @ApiResponse(code = 404, message = "Venda não encontrada")
+    })
+    public ResponseEntity delete(@PathVariable("id") @ApiParam("Id da Venda") Long id) {
         Optional<Venda> venda = service.getVendaById(id);
         if (!venda.isPresent()) {
             return new ResponseEntity("Venda não encontrada", HttpStatus.NOT_FOUND);

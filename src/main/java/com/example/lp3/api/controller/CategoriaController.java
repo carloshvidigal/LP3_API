@@ -9,6 +9,7 @@ import com.example.lp3.model.entity.Permissao;
 import com.example.lp3.service.CategoriaService;
 import com.example.lp3.service.DescontoService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +37,7 @@ public class CategoriaController {
 
     @GetMapping
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Categoria encontrado"),
-            @ApiResponse(code = 404, message = "Categoria não encontrado")
+            @ApiResponse(code = 200, message = "Categorias encontradas")
     })
     public ResponseEntity get() {
         List<Categoria> categorias = service.getCategorias();
@@ -45,7 +45,11 @@ public class CategoriaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity get(@PathVariable("id") Long id) {
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Categoria encontrada"),
+            @ApiResponse(code = 404, message = "Categoria não encontrada")
+    })
+    public ResponseEntity get(@PathVariable("id") @ApiParam("Id da categoria") Long id) {
         Optional<Categoria> categoria = service.getCategoriaById(id);
         if (!categoria.isPresent()) {
             return new ResponseEntity("Categoria não encontrada", HttpStatus.NOT_FOUND);
@@ -55,8 +59,8 @@ public class CategoriaController {
 
     @PostMapping
     @ApiResponses({
-            @ApiResponse(code = 201, message = "Categoria salvo com sucesso"),
-            @ApiResponse(code = 400, message = "Erro ao salvar o Categoria")
+            @ApiResponse(code = 201, message = "Categoria salva com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar a Categoria")
     })
     public ResponseEntity post(@RequestBody CategoriaDTO dto) {
         try {
@@ -78,7 +82,12 @@ public class CategoriaController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity put(@PathVariable("id") Long id, @RequestBody CategoriaDTO dto) {
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Categoria salva com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar a Categoria"),
+            @ApiResponse(code = 404, message = "Categoria não encontrada")
+    })
+    public ResponseEntity put(@PathVariable("id") @ApiParam("Id da categoria") Long id, @RequestBody CategoriaDTO dto) {
         if(!service.getCategoriaById(id).isPresent()) {
             return new ResponseEntity("Categoria não encontrada", HttpStatus.NOT_FOUND);
         }
@@ -97,7 +106,12 @@ public class CategoriaController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity delete(@PathVariable("id") Long id) {
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "Categoria excluída com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao excluir a Categoria"),
+            @ApiResponse(code = 404, message = "Categoria não encontrada")
+    })
+    public ResponseEntity delete(@PathVariable("id") @ApiParam("Id da categoria") Long id) {
         Optional<Categoria> categoria = service.getCategoriaById(id);
         if (!categoria.isPresent()) {
             return new ResponseEntity("Categoria não encontrada", HttpStatus.NOT_FOUND);
