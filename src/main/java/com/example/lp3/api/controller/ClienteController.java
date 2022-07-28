@@ -1,12 +1,8 @@
 package com.example.lp3.api.controller;
 
-import com.example.lp3.api.dto.CargoDTO;
 import com.example.lp3.api.dto.ClienteDTO;
-import com.example.lp3.api.dto.PermissaoDTO;
 import com.example.lp3.exception.RegraNegocioException;
-import com.example.lp3.model.entity.Cargo;
 import com.example.lp3.model.entity.Cliente;
-import com.example.lp3.model.entity.Permissao;
 import com.example.lp3.service.ClienteService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
@@ -17,7 +13,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

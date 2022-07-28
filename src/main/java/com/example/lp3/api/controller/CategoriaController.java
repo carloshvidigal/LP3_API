@@ -1,11 +1,9 @@
 package com.example.lp3.api.controller;
 
 import com.example.lp3.api.dto.CategoriaDTO;
-import com.example.lp3.api.dto.PermissaoDTO;
 import com.example.lp3.exception.RegraNegocioException;
 import com.example.lp3.model.entity.Categoria;
 import com.example.lp3.model.entity.Desconto;
-import com.example.lp3.model.entity.Permissao;
 import com.example.lp3.service.CategoriaService;
 import com.example.lp3.service.DescontoService;
 import io.swagger.annotations.Api;
@@ -17,7 +15,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

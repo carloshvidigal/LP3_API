@@ -1,18 +1,14 @@
 package com.example.lp3.api.controller;
 
 import com.example.lp3.api.dto.CompraDTO;
-import com.example.lp3.api.dto.PermissaoDTO;
 import com.example.lp3.exception.RegraNegocioException;
 import com.example.lp3.model.entity.Compra;
-import com.example.lp3.model.entity.Permissao;
 import com.example.lp3.service.CompraService;
-import com.example.lp3.service.ItemCompraService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,6 @@
 package com.example.lp3.api.controller;
 
 import com.example.lp3.api.dto.CargoDTO;
-import com.example.lp3.api.dto.PermissaoDTO;
 import com.example.lp3.exception.RegraNegocioException;
 import com.example.lp3.model.entity.Cargo;
 import com.example.lp3.service.CargoService;
@@ -64,12 +63,6 @@ public class CargoController {
 
             CargoDTO cargoResposta = modelMapper.map(cargo, CargoDTO.class);
 
-            List<PermissaoDTO> permissoesDTO = cargoResposta.getPermissoes().stream().map(permissaoDTO -> {
-                permissaoDTO.setIdCargo(cargo.getId());
-                return permissaoDTO;
-            }).collect(Collectors.toList());
-
-            cargoResposta.setPermissoes(permissoesDTO);
 
             return new ResponseEntity(cargoResposta, HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
@@ -90,12 +83,7 @@ public class CargoController {
 
             CargoDTO cargoResposta = modelMapper.map(cargo, CargoDTO.class);
 
-            List<PermissaoDTO> permissoesDTO = cargoResposta.getPermissoes().stream().map(permissaoDTO -> {
-                permissaoDTO.setIdCargo(cargo.getId());
-                return permissaoDTO;
-            }).collect(Collectors.toList());
 
-            cargoResposta.setPermissoes(permissoesDTO);
 
             return ResponseEntity.ok(cargoResposta);
         } catch (RegraNegocioException e) {

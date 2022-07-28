@@ -14,7 +14,7 @@ import java.util.List;
 public class CargoDTO {
     private Long id;
     private String nome;
-    private List<PermissaoDTO> permissoes;
+
 
     public static CargoDTO create(Cargo cargo) {
         ModelMapper modelMapper = new ModelMapper();

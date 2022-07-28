@@ -17,7 +17,5 @@ public class Cargo {
     private Long id;
     private String nome;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name="cargo_id")
-    private List<Permissao> permissoes;
+
 }
