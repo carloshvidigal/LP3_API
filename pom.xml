@@ -14,7 +14,7 @@
 	<name>LP3_API</name>
 	<description>Backend LP3&apos;s Project</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>8</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
