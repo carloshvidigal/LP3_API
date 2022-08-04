@@ -17,9 +17,13 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @Column(unique = true)
     private String login;
 
     private String senha;
 
     private boolean admin;
+
+    @OneToOne
+    private Cargo cargo;
 }

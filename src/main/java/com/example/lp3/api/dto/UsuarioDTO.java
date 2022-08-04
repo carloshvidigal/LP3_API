@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class UsuarioDTO {
     private String login;
     private String senha;
+    private Long idCargo;
 }
