@@ -27,11 +27,13 @@ public class CargoController {
     private final CargoService service;
 
     @GetMapping
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Cargos encontrados")
+    })
     public ResponseEntity get() {
         List<Cargo> cargos = service.getCargos();
         return ResponseEntity.ok(cargos.stream().map(CargoDTO::create).collect(Collectors.toList()));
     }
-
 
     @GetMapping("/{id}")
     @ApiOperation("Obter detalhes de um cargos")
@@ -60,7 +62,6 @@ public class CargoController {
 
             CargoDTO cargoResposta = modelMapper.map(cargo, CargoDTO.class);
 
-
             return new ResponseEntity(cargoResposta, HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -68,7 +69,12 @@ public class CargoController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity put(@PathVariable("id") Long id, @RequestBody CargoDTO dto) {
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Cargo salvo com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar o Cargo"),
+            @ApiResponse(code = 404, message = "Cargo não encontrado")
+    })
+    public ResponseEntity put(@PathVariable("id") @ApiParam("Id do Cargo") Long id, @RequestBody CargoDTO dto) {
         if(!service.getCargoById(id).isPresent()) {
             return new ResponseEntity("Cargo não encontrado", HttpStatus.NOT_FOUND);
         }
@@ -80,8 +86,6 @@ public class CargoController {
 
             CargoDTO cargoResposta = modelMapper.map(cargo, CargoDTO.class);
 
-
-
             return ResponseEntity.ok(cargoResposta);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -89,7 +93,12 @@ public class CargoController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity delete(@PathVariable("id") Long id) {
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "Cargo excluído com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao excluir o Cargo"),
+            @ApiResponse(code = 404, message = "Cargo não encontrado")
+    })
+    public ResponseEntity delete(@PathVariable("id") @ApiParam("Id do Cargo") Long id) {
         Optional<Cargo> cargo = service.getCargoById(id);
         if (!cargo .isPresent()) {
             return new ResponseEntity("Cargo não encontrado", HttpStatus.NOT_FOUND);
