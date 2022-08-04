@@ -51,12 +51,6 @@ public class UsuarioController {
         } catch (UsernameNotFoundException e) {
             String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
             usuario.setSenha(senhaCriptografada);
-
-            Optional<Cargo> cargoUsuario = cargoService.getCargoById(dto.getIdCargo());
-            if(!cargoUsuario.isPresent()) {
-                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Usuário precisa ter um cargo válido");
-            }
-            usuario.setCargo(cargoUsuario.get());
             return usuarioService.salvar(usuario);
         }
     }
